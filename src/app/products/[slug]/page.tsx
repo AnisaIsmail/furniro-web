@@ -4,16 +4,15 @@ import { singleProduct } from '@/sanity/lib/queries';
 import { Product } from '../../../../types/products'; 
 import Image from 'next/image'; 
 import { urlFor } from '@/sanity/lib/image'; 
-import AddToCartButton from '@/app/components/AddToCartButton'; 
-import { FaStar } from 'react-icons/fa'; 
-import QuantityControl from '@/app/components/quantity'; 
+import AddToCartButton from '@/app/components/AddToCartButton';
+import { FaStar } from 'react-icons/fa';
+import QuantityControl from '@/app/components/quantity';
 
-// Fetch product data for dynamic routes in the App Directory
+
 const ProductDetail = async ({ params }: { params: { slug: string } }) => {
-  // Await params here
-  const { slug } = await params; // <-- Await params before destructuring
-  
-  // Fetch product data based on the slug
+
+  const slug = await params?.slug;
+
   const productData: Product[] = await client.fetch(singleProduct(slug));
 
   if (!productData || productData.length === 0) {
@@ -81,13 +80,8 @@ const ProductDetail = async ({ params }: { params: { slug: string } }) => {
               productId={product._id} 
               title={product.title} 
               price={product.price} 
-            />
-            <a 
-              href="/cart" 
-              className="bg-green-700 text-white font-semibold ml-12 px-4 py-2 mt-4 rounded-md"
-            >
-              Buy Now
-            </a>
+            />     
+           <a href="/cart" className='bg-green-700 text-white font-semibold ml-12 px-4 py-2 mt-4 rounded-md'> Buy Now</a>
           </div>
 
           {/* Product Description */}
