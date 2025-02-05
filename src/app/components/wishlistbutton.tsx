@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 interface WishlistButtonProps {
   productId: string;
   productTitle: string;
-
 }
 
 const WishlistButton: React.FC<WishlistButtonProps> = ({ productId, productTitle }) => {
@@ -13,7 +12,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({ productId, productTitle
   // Check if the product is already in the wishlist
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    if (wishlist.some((item: { id: string }) => item.id === productId)) {
+    if (wishlist.some((item: { _id: string }) => item._id === productId)) {
       setIsInWishlist(true);
     }
   }, [productId]);
@@ -24,11 +23,11 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({ productId, productTitle
 
     if (isInWishlist) {
       // Remove from wishlist
-      const updatedWishlist = wishlist.filter((item: { id: string }) => item.id !== productId);
+      const updatedWishlist = wishlist.filter((item: { _id: string }) => item._id !== productId);
       localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
     } else {
       // Add to wishlist
-      const updatedWishlist = [...wishlist, { id: productId, title: productTitle }];
+      const updatedWishlist = [...wishlist, { _id: productId, title: productTitle }];
       localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
     }
 
@@ -46,3 +45,4 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({ productId, productTitle
 };
 
 export default WishlistButton;
+

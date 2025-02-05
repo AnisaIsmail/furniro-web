@@ -1,5 +1,6 @@
-import React from 'react';
-import { client } from '@/sanity/lib/client'; 
+'use client'
+import React, { useEffect, useState } from 'react';
+import { sanityFatch } from '@/sanity/lib/fatch';  // Import the sanityFatch function
 import { singleProduct } from '@/sanity/lib/queries'; 
 import { Product } from '../../../../types/products'; 
 import Image from 'next/image'; 
@@ -7,19 +8,48 @@ import { urlFor } from '@/sanity/lib/image';
 import AddToCartButton from '@/app/components/AddToCartButton';
 import { FaStar } from 'react-icons/fa';
 import QuantityControl from '@/app/components/quantity';
+import { useParams } from 'next/navigation'; // Import useParams
 
+const ProductDetail = () => {
+  const { id } = useParams(); // Use useParams to get the route parameter
 
-const ProductDetail = async ({ params }: { params: { id: string } }) => {
+  const [product, setProduct] = useState<Product | null>(null); // State to hold product data
+  const [loading, setLoading] = useState<boolean>(true); // State to handle loading
 
-  const { id } = await params
+  // Fetch product data when the id changes
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) return;
+      try {
+        setLoading(true);
+        const productData: Product[] = await sanityFatch({
+          query: singleProduct(id), // Use the singleProduct query with the id as a parameter
+          params: { id },
+        });
 
-  const productData: Product[] = await client.fetch(singleProduct(id));
+        if (productData && productData.length > 0) {
+          setProduct(productData[0]);
+        } else {
+          setProduct(null);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!productData || productData.length === 0) {
-    return <p>Product not found</p>;
+    fetchProduct();
+  }, [id]); // Re-fetch when the `id` changes
+
+  if (loading) {
+    return <p>Loading...</p>;
   }
 
-  const product = productData[0];
+  if (!product) {
+    return <p>Product not found</p>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">

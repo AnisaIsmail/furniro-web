@@ -1,41 +1,53 @@
- 'use client'
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/store'; 
-import { removeFromWishlist, addToWishlist } from "@/app/redux/wishlistslice" 
+'use client'
+
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import type { RootState } from "../redux/store"
+import { addToWishlist, removeFromWishlist } from "../redux/wishlistslice"
+
+// Define a type for the wishlist item
+interface WishlistItem {
+  _id: string
+  title: string
+}
 
 const Wishlist = () => {
-  const dispatch = useDispatch();
- 
-  const wishlist = useSelector((state: RootState) => state.wishlist.wishlist); 
+  const dispatch = useDispatch()
+  const wishlist = useSelector((state: RootState) => state.wishlist.wishlist)
 
+  // Local state for storing wishlist from localStorage
+  const [clientWishlist, setClientWishlist] = useState<WishlistItem[]>([])
+
+  // Fetch wishlist from localStorage on client-side only
   useEffect(() => {
-    const storedWishlist = localStorage.getItem('wishlist');
+    const storedWishlist = localStorage.getItem("wishlist")
     if (storedWishlist) {
-      const parsedWishlist = JSON.parse(storedWishlist);
-     
-      parsedWishlist.forEach((item: any) => {
-        if (!wishlist.find((wishlistItem) => wishlistItem.id === item.id)) {
-          dispatch(addToWishlist(item)); 
-        }
-      });
+      const parsedWishlist = JSON.parse(storedWishlist) as WishlistItem[]
+      setClientWishlist(parsedWishlist)
     }
-   
-  }, [dispatch, wishlist]); 
+  }, [])
 
-  
-  const handleRemove = (id: string) => {
-    dispatch(removeFromWishlist(id));
-    const updatedWishlist = wishlist.filter(item => item.id !== id);
-    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist)); 
-  };
-
-  
   useEffect(() => {
-    if (wishlist.length > 0) {
-      localStorage.setItem('wishlist', JSON.stringify(wishlist)); 
+    // Sync the clientWishlist with Redux
+    clientWishlist.forEach((item: WishlistItem) => {
+      if (!wishlist.find((WishlistItem) => WishlistItem._id === item._id)) {
+        dispatch(addToWishlist(item))
+      }
+    })
+  }, [clientWishlist, wishlist, dispatch])
+
+  const handleRemove = (_id: string) => {
+    dispatch(removeFromWishlist(_id))  // Remove from Redux
+    const updatedWishlist = clientWishlist.filter((item) => item._id !== _id)  // Remove from local state
+    setClientWishlist(updatedWishlist)
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist))  // Sync with localStorage
+  }
+
+  useEffect(() => {
+    if (clientWishlist.length > 0) {
+      localStorage.setItem("wishlist", JSON.stringify(clientWishlist))  // Keep localStorage updated
     }
-  }, [wishlist]); 
+  }, [clientWishlist])
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -44,29 +56,27 @@ const Wishlist = () => {
       </header>
 
       <main className="container text-center mx-auto px-4 py-8">
-        {wishlist.length === 0 ? (
-          <p>Your wishlist is empty.</p>
+        {clientWishlist.length === 0 ? (
+          <p>Your Wishlist is empty.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {wishlist.map((item: { id: string; title: string }) => (
-              <div key={item.id} className="border rounded-lg p-4 bg-white shadow-lg">
+            {clientWishlist.map((item) => (
+              <div key={item._id} className="border rounded-lg p-4 bg-white shadow-lg">
                 <h2 className="text-xl font-semibold">{item.title}</h2>
-                {/* Add any other product details here */}
-            
+
                 <button
-                  className="bg-purple-800 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-300"
-                  onClick={() => handleRemove(item.id)} // Remove the item on click
+                  className="bg-purple-700 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-300"
+                  onClick={() => handleRemove(item._id)} // Trigger remove
                 >
-                  Remove From wishlist
+                  Remove From Wishlist
                 </button>
               </div>
-              
             ))}
           </div>
         )}
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default Wishlist;
+export default Wishlist
