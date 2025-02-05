@@ -34,7 +34,7 @@ const Cart = () => {
     // Once clientCart is set, dispatch actions to sync with Redux
     clientCart.forEach((item: CartItem) => {
       if (!cartlist.find((cartItem) => cartItem._id === item._id)) {
-        dispatch(addToCart(item))
+        dispatch(addToCart(item)) // This should now work correctly with CartItem type
       }
     })
   }, [clientCart, cartlist, dispatch])

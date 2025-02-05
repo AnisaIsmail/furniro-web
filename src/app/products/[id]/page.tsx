@@ -13,18 +13,21 @@ import { useParams } from 'next/navigation'; // Import useParams
 const ProductDetail = () => {
   const { id } = useParams(); // Use useParams to get the route parameter
 
+  // Make sure id is a string, not a string array
+  const productId = Array.isArray(id) ? id[0] : id; // If id is an array, use the first value
+
   const [product, setProduct] = useState<Product | null>(null); // State to hold product data
   const [loading, setLoading] = useState<boolean>(true); // State to handle loading
 
   // Fetch product data when the id changes
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!id) return;
+      if (!productId) return;
       try {
         setLoading(true);
         const productData: Product[] = await sanityFatch({
-          query: singleProduct(id), // Use the singleProduct query with the id as a parameter
-          params: { id },
+          query: singleProduct(productId), // Use the singleProduct query with the id as a parameter
+          params: { id: productId }, // Pass the string id
         });
 
         if (productData && productData.length > 0) {
@@ -41,7 +44,7 @@ const ProductDetail = () => {
     };
 
     fetchProduct();
-  }, [id]); // Re-fetch when the `id` changes
+  }, [productId]); // Re-fetch when the `productId` changes
 
   if (loading) {
     return <p>Loading...</p>;
