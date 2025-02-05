@@ -22,7 +22,7 @@ const CheckoutForm: React.FC = () => {
 
   const handleProceedToPayment = () => {
     // Assuming payment success
-    alert("Payment Successful!");
+    alert("Payment Successful! Your Order is Confirm~");
     // Clear the cart from redux
     dispatch(removeFromCart({}));
     // Clear cart from local storage
@@ -112,6 +112,7 @@ const CheckoutForm: React.FC = () => {
             onClick={handleProceedToPayment}
           >
             Proceed to Payment
+          
           </button>
         </div>
       </form>

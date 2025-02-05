@@ -1,3 +1,4 @@
+
 import SProduct from "./components/furniture"
 import HeroSection from "./components/hero"
 

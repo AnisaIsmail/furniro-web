@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { updateCartItemQuantity } from '@/app/redux/cartslice';
@@ -6,6 +7,13 @@ import { updateCartItemQuantity } from '@/app/redux/cartslice';
 const Checkout = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.cart);
+
+  const [isClient, setIsClient] = useState(false); // Step 1: Track if it's client-side
+
+  // Step 2: Use useEffect to set isClient after component mounts
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
@@ -18,6 +26,8 @@ const Checkout = () => {
       }
     }
   };
+
+  if (!isClient) return null; // Step 3: Prevent rendering until it's client-side
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -60,7 +70,6 @@ const Checkout = () => {
         >
           CheckOut
         </a>
-        
       </div>
     </div>
   );

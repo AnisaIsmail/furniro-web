@@ -1,6 +1,5 @@
-
-
-import React from "react";
+'use client'
+import React, { useState, useEffect } from "react";
 
 interface PaginationProps {
   totalProducts: number;
@@ -15,8 +14,14 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   onPageChange,
 }) => {
+  const [isClient, setIsClient] = useState(false);
   const totalPages = Math.ceil(totalProducts / productsPerPage);
-  
+
+  // Set isClient to true after component mounts on client-side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       onPageChange(page);
@@ -27,6 +32,8 @@ const Pagination: React.FC<PaginationProps> = ({
   for (let i = 1; i <= totalPages; i++) {
     pages.push(i);
   }
+
+  if (!isClient) return null; // Avoid rendering before client-side
 
   return (
     <div className="flex justify-center items-center mt-8 space-x-2">
@@ -58,3 +65,4 @@ const Pagination: React.FC<PaginationProps> = ({
 };
 
 export default Pagination;
+

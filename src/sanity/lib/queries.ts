@@ -13,4 +13,3 @@ export const singleProduct = (slug: string) => `
     productImage
   }
 `;
-

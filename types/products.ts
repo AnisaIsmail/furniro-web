@@ -1,6 +1,4 @@
-
 export interface Product {
-  colors: any;
   image: string;
   _id: string;
   title: string;

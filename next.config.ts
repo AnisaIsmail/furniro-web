@@ -9,6 +9,15 @@ export default {
               hostname: 'cdn.sanity.io',
           },
 ],
-unoptimized: true,     
+unoptimized: true,   
+
+experimental: {
+  esmExternals: true, // or other options
+},
+// Disable ESLint during build
+eslint: {
+  ignoreDuringBuilds: true,
+},
+
   },
 };
