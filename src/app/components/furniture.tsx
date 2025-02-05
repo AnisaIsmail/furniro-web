@@ -42,7 +42,7 @@ const SProduct = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentProducts.map((product) => (
           <div key={product._id} className="border rounded-lg shadow-md py-4 hover:shadow-lg transition duration-200">
-            <Link href={`/products/${product.slug.current}`}>
+            <Link href={`/products/${product._id}`}>
               {product.productImage && (
                 <Image
                   src={urlFor(product.productImage).url()}

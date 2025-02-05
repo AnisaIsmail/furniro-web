@@ -9,11 +9,11 @@ import { FaStar } from 'react-icons/fa';
 import QuantityControl from '@/app/components/quantity';
 
 
-const ProductDetail = async ({ params }: { params: { slug: string } }) => {
+const ProductDetail = async ({ params }: { params: { id: string } }) => {
 
-  const slug = await params?.slug;
+  const { id } = await params
 
-  const productData: Product[] = await client.fetch(singleProduct(slug));
+  const productData: Product[] = await client.fetch(singleProduct(id));
 
   if (!productData || productData.length === 0) {
     return <p>Product not found</p>;
